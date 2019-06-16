@@ -1,11 +1,11 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion versions.compile_sdk
     defaultConfig {
         applicationId "com.appr.framework"
-        minSdkVersion 21
-        targetSdkVersion 28
+        minSdkVersion versions.min_sdk
+        targetSdkVersion versions.compile_sdk
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -20,9 +20,30 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'androidx.appcompat:appcompat:1.0.0-beta01'
-    implementation 'androidx.constraintlayout:constraintlayout:1.1.2'
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test:runner:1.1.0-alpha4'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0-alpha4'
+    api deps.support.appCompat
+    api deps.support.recyclerView
+    api deps.support.cardView
+    api deps.support.support
+    api deps.support.designSupport
+
+    api deps.android.lifecycleExt
+    api deps.android.lifecycleCommon
+    api deps.android.roomRuntime
+    api deps.android.roomRx
+
+    api deps.reactivex.rxJava
+    api deps.reactivex.rxAndroid
+
+    api deps.google.gson
+
+    api deps.square.picasso
+    api deps.square.okhttpDownloader
+    api deps.square.retrofit
+    api deps.square.retrofitMock
+    api deps.square.okhttp
+    api deps.square.gsonConverter
+    api deps.square.retrofitRxAdapter
+
+    api deps.facebook.stetho
+    api deps.facebook.stethoOkHttp
 }
