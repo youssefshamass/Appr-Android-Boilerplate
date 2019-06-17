@@ -3,6 +3,7 @@ package com.appr.framework.constants;
 import android.content.Context;
 
 import com.appr.framework.BuildConfig;
+import com.appr.framework.network.rest.IRestMethodFactory;
 import com.appr.framework.network.rest.RestFactory;
 import com.appr.framework.network.schedulers.ApprScheduler;
 import com.appr.framework.network.schedulers.IScheduler;
@@ -128,6 +129,8 @@ public class Constants {
                 .client(okHttpClient)
                 .build();
 
+        //Init RestMethodFactory
+        restFactory = RestFactory.getInstance();
     }
 
     private void initImageModule() {

@@ -2,9 +2,7 @@ package com.appr.framework.utils;
 
 import android.text.TextUtils;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class GeneralHelper {
     public static boolean isNullOrEmpty(List list) {
