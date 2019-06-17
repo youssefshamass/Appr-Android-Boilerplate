@@ -1,3 +1,4 @@
 <resources>
-    <string name="app_name">Framework</string>
+    <string name="app_name">Appr</string>
+    <string name="check_network_error_msg">Please check you internet connection and try again</string>
 </resources>

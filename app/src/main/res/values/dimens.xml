@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="spacing_tiny">4dp</dimen>
+    <dimen name="spacing_small">8dp</dimen>
+    <dimen name="spacing_normal">16dp</dimen>
+    <dimen name="spacing_large">32dp</dimen>
+    <dimen name="spacing_huge">40dp</dimen>
+
+    <dimen name="text_size_huge">18sp</dimen>
+    <dimen name="text_size_large">15sp</dimen>
+    <dimen name="text_size_normal">13sp</dimen>
+    <dimen name="text_size_sub">11sp</dimen>
+    <dimen name="text_size_small">9sp</dimen>
+</resources>
