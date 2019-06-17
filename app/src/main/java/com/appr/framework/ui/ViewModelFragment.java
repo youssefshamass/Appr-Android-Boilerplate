@@ -7,6 +7,7 @@ import com.appr.framework.R;
 import com.appr.framework.messages.ResponseWrapper;
 import com.appr.framework.viewmodels.AbstractViewModel;
 
+import androidx.annotation.CallSuper;
 import androidx.lifecycle.Observer;
 
 public abstract class ViewModelFragment extends BaseFragment implements Observer<ResponseWrapper> {
@@ -17,15 +18,42 @@ public abstract class ViewModelFragment extends BaseFragment implements Observer
 
     //endregion
 
-    //region Abstract members
-
-    public abstract AbstractViewModel getViewModel();
+    //region Fragment members
 
     @Override
+    @CallSuper
+    public void onStart() {
+        super.onStart();
+
+        if (mViewModel != null)
+            mViewModel.onStart(getContext());
+    }
+
+    @Override
+    @CallSuper
     public void onResume() {
         super.onResume();
 
-        init();
+        if (mViewModel != null)
+            mViewModel.onResume(getContext());
+    }
+
+    @Override
+    @CallSuper
+    public void onPause() {
+        super.onPause();
+
+        if (mViewModel != null)
+            mViewModel.onPause(getContext());
+    }
+
+    @Override
+    @CallSuper
+    public void onStop() {
+        super.onStop();
+
+        if (mViewModel != null)
+            mViewModel.onStop(getContext());
     }
 
     //endregion
@@ -54,6 +82,12 @@ public abstract class ViewModelFragment extends BaseFragment implements Observer
 
     //endregion
 
+    //region Abstract members
+
+    abstract AbstractViewModel getViewModel();
+
+    //endregion
+
     //region Public members
 
     public void init() {
@@ -61,15 +95,15 @@ public abstract class ViewModelFragment extends BaseFragment implements Observer
         mViewModel.subscribe(this, this);
     }
 
-    public void onSucceed(Object result) {
+    protected void onSucceed(Object result) {
 
     }
 
-    public void onError(Throwable throwable, String message) {
+    protected void onError(Throwable throwable, String message) {
         //TODO: Handle Generic Errors
     }
 
-    public void onLoading(boolean isLoading) {
+    protected void onLoading(boolean isLoading) {
         mIsLoading = isLoading;
     }
 

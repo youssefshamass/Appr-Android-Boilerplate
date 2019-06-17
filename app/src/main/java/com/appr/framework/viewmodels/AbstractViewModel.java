@@ -1,8 +1,16 @@
 package com.appr.framework.viewmodels;
 
-import com.appr.framework.messages.ResponseWrapper;
-import com.appr.framework.repositories.AbstractRepository;
+import android.content.Context;
 
+import com.appr.framework.messages.Request;
+import com.appr.framework.messages.ResponseWrapper;
+import com.appr.framework.network.base.EHttpMethod;
+import com.appr.framework.repositories.AbstractRepository;
+import com.appr.framework.utils.GeneralHelper;
+
+import java.util.HashMap;
+
+import androidx.annotation.CallSuper;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -26,8 +34,61 @@ public abstract class AbstractViewModel extends ViewModel implements IViewModel 
         mCompositeDisposable = new CompositeDisposable();
 
         mDataSource = new MutableLiveData<>();
-        this.mCompositeDisposable.add(this.mAbstractRepository.getPublishSubject().subscribe(listResource ->
-                ((MutableLiveData<ResponseWrapper>) mDataSource).setValue(listResource)));
+        this.mCompositeDisposable.add(this.mAbstractRepository.getPublishSubject().subscribe(listResource -> {
+            //TODO: purge pending requests map.
+            ((MutableLiveData<ResponseWrapper>) mDataSource).setValue(listResource);
+        }));
+    }
+
+    //endregion
+
+    //region IViewModel members
+
+    @Override
+    @CallSuper
+    public void onStart(Context context) {
+
+    }
+
+    @Override
+    @CallSuper
+    public void onStop(Context context) {
+
+    }
+
+    @Override
+    @CallSuper
+    public void onResume(Context context) {
+
+    }
+
+    @Override
+    @CallSuper
+    public void onPause(Context context) {
+
+    }
+
+    @Override
+    public void executeRequest(Class forClass, EHttpMethod httpMethod, HashMap<String, Object> requestCriteria) {
+        executeRequest(forClass, httpMethod, null, requestCriteria);
+    }
+
+    @Override
+    public void executeRequest(Class forClass, EHttpMethod httpMethod, String actionName, HashMap<String, Object> requestCriteria) {
+        String requestID = forClass.getSimpleName() + "-" + httpMethod.toString();
+        if (!GeneralHelper.isNullOrEmpty(actionName))
+            requestID += "-" + actionName;
+
+        //TODO: Append Request Params to ID.
+
+        Request request = new Request(forClass, httpMethod);
+        request.setID(requestID);
+        request.setActionName(actionName);
+        request.setParams(requestCriteria);
+
+        //TODO: break; if request id is persisted in pending requests map.
+
+        mAbstractRepository.executeRequest(request, mCompositeDisposable);
     }
 
     //endregion
