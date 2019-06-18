@@ -1,6 +1,7 @@
 package com.appr.framework.viewmodels;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.appr.framework.messages.Request;
 import com.appr.framework.messages.ResponseWrapper;
@@ -19,11 +20,18 @@ import androidx.lifecycle.ViewModel;
 import io.reactivex.disposables.CompositeDisposable;
 
 public abstract class AbstractViewModel extends ViewModel implements IViewModel {
+    //region Constants
+
+    public final String TAG = getClass().getSimpleName();
+
+    //endregion
+
     //region Variables
 
     protected CompositeDisposable mCompositeDisposable;
     protected AbstractRepository mAbstractRepository;
-    public LiveData<ResponseWrapper> mDataSource;
+    protected LiveData<ResponseWrapper> mDataSource;
+    private HashMap<String, Request> mPendingRequests;
 
     //endregion
 
@@ -32,10 +40,12 @@ public abstract class AbstractViewModel extends ViewModel implements IViewModel 
     public AbstractViewModel() {
         mAbstractRepository = getAbstractRepository();
         mCompositeDisposable = new CompositeDisposable();
+        mPendingRequests = new HashMap<>();
 
         mDataSource = new MutableLiveData<>();
         this.mCompositeDisposable.add(this.mAbstractRepository.getPublishSubject().subscribe(listResource -> {
-            //TODO: purge pending requests map.
+            removePendingRequest(listResource.getRequestID());
+
             ((MutableLiveData<ResponseWrapper>) mDataSource).setValue(listResource);
         }));
     }
@@ -81,12 +91,17 @@ public abstract class AbstractViewModel extends ViewModel implements IViewModel 
 
         //TODO: Append Request Params to ID.
 
+        if (isPendingRequest(requestID)) {
+            Log.d(TAG, "Request eliminated, reason: duplicate request with id: " + requestID);
+            return;
+        }
+
         Request request = new Request(forClass, httpMethod);
         request.setID(requestID);
         request.setActionName(actionName);
         request.setParams(requestCriteria);
 
-        //TODO: break; if request id is persisted in pending requests map.
+        persistPendingRequest(requestID, request);
 
         mAbstractRepository.executeRequest(request, mCompositeDisposable);
     }
@@ -101,6 +116,22 @@ public abstract class AbstractViewModel extends ViewModel implements IViewModel 
 
     public void replyOldValue() {
         ((MutableLiveData<ResponseWrapper>) mDataSource).setValue(mDataSource.getValue());
+    }
+
+    //endregion
+
+    //region Private members
+
+    private void removePendingRequest(String requestID) {
+        mPendingRequests.remove(requestID);
+    }
+
+    private void persistPendingRequest(String requestID, Request request) {
+        mPendingRequests.put(requestID, request);
+    }
+
+    private boolean isPendingRequest(String requestID) {
+        return mPendingRequests.containsKey(requestID);
     }
 
     //endregion

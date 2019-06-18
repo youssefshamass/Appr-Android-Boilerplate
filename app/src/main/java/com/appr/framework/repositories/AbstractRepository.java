@@ -64,12 +64,11 @@ public class AbstractRepository implements IRepository {
                 .subscribeOn(constants.scheduler.io())
                 .subscribe(result -> {
                     Response response = new Response(result);
-
                     //TODO: cache response if model is annotated as cacheable.
 
-                    publishResult(response);
+                    publishResult(response, request);
                 }, error -> {
-                    publishError((Throwable) error);
+                    publishError((Throwable) error, request);
                 });
 
         compositeDisposable.add(disposable);
@@ -84,16 +83,21 @@ public class AbstractRepository implements IRepository {
         return mPublishSubject;
     }
 
-    protected Subject<ResponseWrapper> publishResult(Response result) {
+    protected Subject<ResponseWrapper> publishResult(Response result, Request request) {
         publishLoading(false);
+        ResponseWrapper.Success publishObject = new ResponseWrapper.Success(result);
+        publishObject.setRequestID(request.getID());
+
         mPublishSubject.onNext(new ResponseWrapper.Success(result));
         return mPublishSubject;
     }
 
-    protected Subject<ResponseWrapper> publishError(Throwable error) {
+    protected Subject<ResponseWrapper> publishError(Throwable error, Request request) {
         publishLoading(false);
+        ResponseWrapper.Error publishObject = new ResponseWrapper.Error(error);
+        publishObject.setRequestID(request.getID());
 
-        mPublishSubject.onNext(new ResponseWrapper.Error(error));
+        mPublishSubject.onNext(publishObject);
         return mPublishSubject;
     }
 

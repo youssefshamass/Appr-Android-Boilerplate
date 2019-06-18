@@ -2,6 +2,12 @@ package com.appr.framework.messages;
 
 public class ResponseWrapper {
 
+    //region Varaibles
+
+    private String mRequestID;
+
+    //endregion
+
     //region Public members
 
     public static ResponseWrapper success(Response data) {
@@ -18,6 +24,18 @@ public class ResponseWrapper {
 
     public static ResponseWrapper error(Throwable error, String message) {
         return new Error(error, message);
+    }
+
+    //endregion
+
+    //region Getters && Setters
+
+    public String getRequestID() {
+        return mRequestID;
+    }
+
+    public void setRequestID(String requestID) {
+        mRequestID = requestID;
     }
 
     //endregion
