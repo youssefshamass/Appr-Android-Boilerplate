@@ -43,10 +43,11 @@ public abstract class AbstractViewModel extends ViewModel implements IViewModel 
         mPendingRequests = new HashMap<>();
 
         mDataSource = new MutableLiveData<>();
-        this.mCompositeDisposable.add(this.mAbstractRepository.getPublishSubject().subscribe(listResource -> {
-            removePendingRequest(listResource.getRequestID());
+        this.mCompositeDisposable.add(this.mAbstractRepository.getPublishSubject().subscribe(resource -> {
+            if (!(resource instanceof ResponseWrapper.Loading))
+                removePendingRequest(resource.getRequestID());
 
-            ((MutableLiveData<ResponseWrapper>) mDataSource).setValue(listResource);
+            ((MutableLiveData<ResponseWrapper>) mDataSource).setValue(resource);
         }));
     }
 

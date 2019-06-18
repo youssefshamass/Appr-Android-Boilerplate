@@ -88,7 +88,7 @@ public class AbstractRepository implements IRepository {
         ResponseWrapper.Success publishObject = new ResponseWrapper.Success(result);
         publishObject.setRequestID(request.getID());
 
-        mPublishSubject.onNext(new ResponseWrapper.Success(result));
+        mPublishSubject.onNext(publishObject);
         return mPublishSubject;
     }
 
